@@ -76,7 +76,25 @@ usertrap(void)
   if(killed(p))
     exit(-1);
 
-  // give up the CPU if this is a timer interrupt.
+  if (which_dev == 2 && p != 0 && p->state == RUNNING) { // 2 is typically DEV_TIMER
+    acquire(&p->lock);
+    if (p->alarm_interval > 0 && p->alarm_handler_addr != 0) {
+      p->alarm_ticks_left--;
+      if (p->alarm_ticks_left <= 0) {
+        uint64 original_user_pc = p->trapframe->epc;
+        p->trapframe->sp -= 8; // Make space on user stack for one uint64
+        if (copyout(p->pagetable, p->trapframe->sp, (char *)&original_user_pc, sizeof(uint64)) < 0) {
+          // copyout failed, revert stack change and potentially log error or kill process
+          p->trapframe->sp += 8; 
+          // Consider logging this failure if a logging mechanism exists
+        } else {
+          p->trapframe->epc = p->alarm_handler_addr; // Set PC to handler
+        }
+        p->alarm_interval = 0; // One-shot alarm
+      }
+    }
+    release(&p->lock);
+  }
   if(which_dev == 2)
     yield();
 
