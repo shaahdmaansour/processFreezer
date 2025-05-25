@@ -1,0 +1,14 @@
+echo hello world > testfile
+ls
+chmod 755 testfile
+ls
+chmod 644 testfile  
+ls
+chmod 600 testfile
+ls
+mkdir testdir
+ls
+chmod 755 testdir
+ls
+chmod 700 testdir
+ls

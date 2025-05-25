@@ -1,0 +1,40 @@
+echo "=== Testing default file permissions ==="
+echo hello world > testfile
+ls -l testfile 2>/dev/null || ls testfile
+echo
+
+echo "=== Testing chmod functionality ==="
+chmod 755 testfile
+ls -l testfile 2>/dev/null || ls testfile
+echo
+
+chmod 644 testfile  
+ls -l testfile 2>/dev/null || ls testfile
+echo
+
+chmod 600 testfile
+ls -l testfile 2>/dev/null || ls testfile
+echo
+
+echo "=== Testing directory permissions ==="
+mkdir testdir
+ls -l testdir 2>/dev/null || ls testdir
+echo
+
+chmod 755 testdir
+ls -l testdir 2>/dev/null || ls testdir
+echo
+
+chmod 700 testdir
+ls -l testdir 2>/dev/null || ls testdir
+echo
+
+echo "=== Testing device files ==="
+ls -l console 2>/dev/null || ls console
+echo
+
+echo "=== Final directory listing ==="
+ls
+echo
+
+echo "=== Test completed ==="

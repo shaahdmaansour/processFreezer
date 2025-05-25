@@ -38,3 +38,4 @@ entry("mkdir");
 entry("close");
 entry("freeze");
 entry("unfreeze");
+entry("chmod");

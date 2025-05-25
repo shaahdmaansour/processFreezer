@@ -1,0 +1,10 @@
+echo hello > test.txt
+ls
+chmod 755 test.txt
+ls
+chmod 600 test.txt
+ls
+mkdir dir1
+ls
+chmod 700 dir1
+ls

@@ -1,0 +1,43 @@
+# XV6 chmod Usage Examples
+
+# 1. Create some test files and see default permissions
+echo "Hello World" > file1.txt
+echo "Test content" > file2.txt
+ls
+
+# 2. Change file permissions to read-only for everyone
+chmod 444 file1.txt
+ls
+
+# 3. Make file executable by owner, readable by others
+chmod 744 file2.txt
+ls
+
+# 4. Create a directory and test directory permissions
+mkdir testdir
+ls
+
+# 5. Change directory permissions (owner only)
+chmod 700 testdir
+ls
+
+# 6. Make a file private (owner read/write only)
+chmod 600 file1.txt
+ls
+
+# 7. Make a file fully accessible
+chmod 777 file2.txt
+ls
+
+# 8. Test different permission combinations
+echo "Script content" > script.sh
+chmod 755 script.sh  # Make it executable
+ls
+
+# 9. View all files with permissions
+ls
+
+# 10. Test the chmod program itself
+ls chmod
+chmod 755 chmod
+ls chmod
