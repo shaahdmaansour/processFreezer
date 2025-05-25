@@ -25,16 +25,6 @@ read:
  li a7, SYS_read
  ecall
  ret
-.global write
-write:
- li a7, SYS_write
- ecall
- ret
-.global close
-close:
- li a7, SYS_close
- ecall
- ret
 .global kill
 kill:
  li a7, SYS_kill
@@ -45,34 +35,9 @@ exec:
  li a7, SYS_exec
  ecall
  ret
-.global open
-open:
- li a7, SYS_open
- ecall
- ret
-.global mknod
-mknod:
- li a7, SYS_mknod
- ecall
- ret
-.global unlink
-unlink:
- li a7, SYS_unlink
- ecall
- ret
 .global fstat
 fstat:
  li a7, SYS_fstat
- ecall
- ret
-.global link
-link:
- li a7, SYS_link
- ecall
- ret
-.global mkdir
-mkdir:
- li a7, SYS_mkdir
  ecall
  ret
 .global chdir
@@ -103,5 +68,50 @@ sleep:
 .global uptime
 uptime:
  li a7, SYS_uptime
+ ecall
+ ret
+.global open
+open:
+ li a7, SYS_open
+ ecall
+ ret
+.global write
+write:
+ li a7, SYS_write
+ ecall
+ ret
+.global mknod
+mknod:
+ li a7, SYS_mknod
+ ecall
+ ret
+.global unlink
+unlink:
+ li a7, SYS_unlink
+ ecall
+ ret
+.global link
+link:
+ li a7, SYS_link
+ ecall
+ ret
+.global mkdir
+mkdir:
+ li a7, SYS_mkdir
+ ecall
+ ret
+.global close
+close:
+ li a7, SYS_close
+ ecall
+ ret
+.global freeze
+freeze:
+ li a7, SYS_freeze
+ ecall
+ ret
+.global unfreeze
+unfreeze:
+ li a7, SYS_unfreeze
  ecall
  ret

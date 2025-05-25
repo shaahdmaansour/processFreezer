@@ -6,6 +6,8 @@
 #include "spinlock.h"
 #include "proc.h"
 
+extern struct proc proc[NPROC];
+
 uint64
 sys_exit(void)
 {
@@ -96,15 +98,14 @@ uint64
 sys_freeze(void)
 {
   int pid;
-  if(argint(0, &pid) < 0)
-    return -1;
+  argint(0, &pid);
   
   struct proc *p;
   for(p = proc; p < &proc[NPROC]; p++){
     acquire(&p->lock);
     if(p->pid == pid){
-      if(p->state == RUNNING || p->state == RUNNABLE){
-        p->state = FROZEN;
+      if(p->state != ZOMBIE && p->state != UNUSED && !p->frozen){
+        p->frozen = 1;  // set frozen flag
         release(&p->lock);
         return 0;
       }
@@ -120,15 +121,18 @@ uint64
 sys_unfreeze(void)
 {
   int pid;
-  if(argint(0, &pid) < 0)
-    return -1;
+  argint(0, &pid);
   
   struct proc *p;
   for(p = proc; p < &proc[NPROC]; p++){
     acquire(&p->lock);
     if(p->pid == pid){
-      if(p->state == FROZEN){
-        p->state = RUNNABLE;
+      if(p->frozen){
+        p->frozen = 0;  // clear frozen flag
+        if(p->state == SLEEPING) {
+          // Wake it up
+          p->state = RUNNABLE;
+        }
         release(&p->lock);
         return 0;
       }
