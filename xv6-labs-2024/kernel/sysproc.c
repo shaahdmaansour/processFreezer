@@ -91,3 +91,51 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+uint64
+sys_freeze(void)
+{
+  int pid;
+  if(argint(0, &pid) < 0)
+    return -1;
+  
+  struct proc *p;
+  for(p = proc; p < &proc[NPROC]; p++){
+    acquire(&p->lock);
+    if(p->pid == pid){
+      if(p->state == RUNNING || p->state == RUNNABLE){
+        p->state = FROZEN;
+        release(&p->lock);
+        return 0;
+      }
+      release(&p->lock);
+      return -1;
+    }
+    release(&p->lock);
+  }
+  return -1;
+}
+
+uint64
+sys_unfreeze(void)
+{
+  int pid;
+  if(argint(0, &pid) < 0)
+    return -1;
+  
+  struct proc *p;
+  for(p = proc; p < &proc[NPROC]; p++){
+    acquire(&p->lock);
+    if(p->pid == pid){
+      if(p->state == FROZEN){
+        p->state = RUNNABLE;
+        release(&p->lock);
+        return 0;
+      }
+      release(&p->lock);
+      return -1;
+    }
+    release(&p->lock);
+  }
+  return -1;
+}
