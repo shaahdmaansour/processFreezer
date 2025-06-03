@@ -1,12 +1,14 @@
 #include "types.h"
-#include "riscv.h"
-#include "defs.h"
 #include "param.h"
 #include "memlayout.h"
+#include "riscv.h"
 #include "spinlock.h"
-#include "proc.h"
+#include "proc.h"      // This provides proc[] declaration
+#include "syscall.h"
+#include "defs.h"
 
-extern struct proc proc[NPROC];
+
+
 
 uint64
 sys_exit(void)
@@ -94,52 +96,29 @@ sys_uptime(void)
   return xticks;
 }
 
-uint64
-sys_freeze(void)
+int 
+sys_setpriority(void)
 {
-  int pid;
-  argint(0, &pid);
-  
-  struct proc *p;
-  for(p = proc; p < &proc[NPROC]; p++){
-    acquire(&p->lock);
-    if(p->pid == pid){
-      if(p->state != ZOMBIE && p->state != UNUSED && !p->frozen){
-        p->frozen = 1;  // set frozen flag
-        release(&p->lock);
-        return 0;
-      }
-      release(&p->lock);
-      return -1;
-    }
-    release(&p->lock);
-  }
-  return -1;
-}
+    int pid;
+    int priority;
+    struct proc *p;
+    
+    // Get pid argument - CORRECTED version
+    argint(0, &pid);
+    
+    // Get priority argument - CORRECTED version
+    argint(1, &priority);
 
-uint64
-sys_unfreeze(void)
-{
-  int pid;
-  argint(0, &pid);
-  
-  struct proc *p;
-  for(p = proc; p < &proc[NPROC]; p++){
-    acquire(&p->lock);
-    if(p->pid == pid){
-      if(p->frozen){
-        p->frozen = 0;  // clear frozen flag
-        if(p->state == SLEEPING) {
-          // Wake it up
-          p->state = RUNNABLE;
+    // Search process table
+    for(p = proc; p < &proc[NPROC]; p++) {
+        acquire(&p->lock);
+        if(p->pid == pid) {
+            int old_priority = p->priority;
+            p->priority = priority;
+            release(&p->lock);
+            return old_priority;
         }
         release(&p->lock);
-        return 0;
-      }
-      release(&p->lock);
-      return -1;
     }
-    release(&p->lock);
-  }
-  return -1;
+    return -1;  // Process not found
 }

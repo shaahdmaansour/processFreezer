@@ -55,7 +55,6 @@ procinit(void)
       initlock(&p->lock, "proc");
       p->state = UNUSED;
       p->kstack = KSTACK((int) (p - proc));
-      p->frozen = 0;  // Initialize frozen flag
   }
 }
 
@@ -125,6 +124,7 @@ allocproc(void)
 found:
   p->pid = allocpid();
   p->state = USED;
+  p->priority = 10;
 
   // Allocate a trapframe page.
   if((p->trapframe = (struct trapframe *)kalloc()) == 0){
@@ -458,11 +458,6 @@ scheduler(void)
     int found = 0;
     for(p = proc; p < &proc[NPROC]; p++) {
       acquire(&p->lock);
-      if(p->frozen) {
-        // Skip frozen processes
-        release(&p->lock);
-        continue;
-      }
       if(p->state == RUNNABLE) {
         // Switch to chosen process.  It is the process's job
         // to release its lock and then reacquire it
@@ -699,3 +694,14 @@ procdump(void)
     printf("\n");
   }
 }
+
+struct proc* getproc(int pid) {
+  struct proc *p;
+  for (p = proc; p < &proc[NPROC]; p++) {
+    if (p->pid == pid) {
+      return p;
+    }
+  }
+  return 0; // return null if process not found
+}
+
