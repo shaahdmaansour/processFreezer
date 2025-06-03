@@ -195,6 +195,8 @@ UPROGS=\
 	$U/_wc\
 	$U/_zombie\
 	$U/_freezerTest\
+	$U/_freezerTest2\
+	$U/_freezerTest3\
 
 
 
