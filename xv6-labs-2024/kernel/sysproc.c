@@ -180,3 +180,55 @@ sys_meminfo(void)
   // Pack the values into a 64-bit return value
   return (free_pages << 32) | used_pages;
 }
+
+// Helper function to print process tree recursively
+void
+print_ptree_recursive(struct proc *p, int depth)
+{
+  struct proc *child;
+  int i;
+
+  // Print current process with indentation (2 spaces per depth level)
+  for(i = 0; i < depth * 2; i++) {
+    printf(" ");
+  }
+  printf("%s pid=%d ppid=%d\n", p->name, p->pid, p->parent ? p->parent->pid : 0);
+
+  // Find and print children
+  for(child = proc; child < &proc[NPROC]; child++) {
+    acquire(&child->lock);
+    if(child->state != UNUSED && child->parent == p) {
+      release(&child->lock);
+      print_ptree_recursive(child, depth + 1);
+    } else {
+      release(&child->lock);
+    }
+  }
+}
+
+uint64
+sys_ptree(void)
+{
+  struct proc *init_proc = 0;
+  struct proc *p;
+
+  // Find the init process (PID 1)
+  for(p = proc; p < &proc[NPROC]; p++) {
+    acquire(&p->lock);
+    if(p->pid == 1 && p->state != UNUSED) {
+      init_proc = p;
+      release(&p->lock);
+      break;
+    }
+    release(&p->lock);
+  }
+
+  if(init_proc == 0) {
+    printf("ptree: init process not found\n");
+    return -1;
+  }
+
+  // Print the process tree starting from init
+  print_ptree_recursive(init_proc, 0);
+  return 0;
+}

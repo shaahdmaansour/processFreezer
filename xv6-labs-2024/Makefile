@@ -198,6 +198,11 @@ UPROGS=\
 	$U/_freezerTest2\
 	$U/_freezerTest3\
 	$U/_meminfo\
+	$U/_ptree\
+	$U/_ptree_linear\
+	$U/_ptree_binary\
+	$U/_ptree_wide\
+	$U/_ptree_mixed\
 
 
 

@@ -104,6 +104,7 @@ extern uint64 sys_close(void);
 extern uint64 sys_freeze(void);
 extern uint64 sys_unfreeze(void);
 extern uint64 sys_meminfo(void);
+extern uint64 sys_ptree(void);
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
@@ -132,6 +133,7 @@ static uint64 (*syscalls[])(void) = {
 [SYS_freeze]  sys_freeze,
 [SYS_unfreeze] sys_unfreeze,
 [SYS_meminfo] sys_meminfo,
+[SYS_ptree]   sys_ptree,
 };
 
 void

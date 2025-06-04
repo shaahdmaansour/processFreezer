@@ -39,3 +39,4 @@ entry("close");
 entry("freeze");
 entry("unfreeze");
 entry("meminfo");
+entry("ptree");

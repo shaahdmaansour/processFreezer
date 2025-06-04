@@ -120,3 +120,8 @@ meminfo:
  li a7, SYS_meminfo
  ecall
  ret
+.global ptree
+ptree:
+ li a7, SYS_ptree
+ ecall
+ ret

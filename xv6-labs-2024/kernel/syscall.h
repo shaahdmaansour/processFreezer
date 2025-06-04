@@ -23,3 +23,4 @@
 #define SYS_freeze  22
 #define SYS_unfreeze 23
 #define SYS_meminfo 24  // Add new system call number
+#define SYS_ptree 25
