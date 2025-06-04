@@ -197,6 +197,7 @@ UPROGS=\
 	$U/_freezerTest\
 	$U/_freezerTest2\
 	$U/_freezerTest3\
+	$U/_meminfo\
 
 
 

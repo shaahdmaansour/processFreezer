@@ -115,3 +115,8 @@ unfreeze:
  li a7, SYS_unfreeze
  ecall
  ret
+.global meminfo
+meminfo:
+ li a7, SYS_meminfo
+ ecall
+ ret

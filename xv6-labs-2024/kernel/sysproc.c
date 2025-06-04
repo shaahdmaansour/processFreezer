@@ -7,6 +7,18 @@
 #include "proc.h"
 
 extern struct proc proc[NPROC];
+extern char end[]; // first address after kernel, defined by kernel.ld
+
+// Declare struct run
+struct run {
+  struct run *next;
+};
+
+// Declare kmem as external
+extern struct {
+  struct spinlock lock;
+  struct run *freelist;
+} kmem;
 
 uint64
 sys_exit(void)
@@ -142,4 +154,29 @@ sys_unfreeze(void)
     release(&p->lock);
   }
   return -1;
+}
+
+// Return memory statistics
+// Returns a 64-bit value where:
+// - Upper 32 bits contain total free pages
+// - Lower 32 bits contain total used pages
+uint64
+sys_meminfo(void)
+{
+  struct run *r;
+  uint64 free_pages = 0;
+  uint64 used_pages = 0;
+  uint64 total_pages = (PHYSTOP - (uint64)end) / PGSIZE;
+
+  // Count free pages
+  acquire(&kmem.lock);
+  for(r = kmem.freelist; r; r = r->next)
+    free_pages++;
+  release(&kmem.lock);
+
+  // Calculate used pages
+  used_pages = total_pages - free_pages;
+
+  // Pack the values into a 64-bit return value
+  return (free_pages << 32) | used_pages;
 }

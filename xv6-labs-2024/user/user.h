@@ -24,6 +24,7 @@ int sleep(int);
 int uptime(void);
 int freeze(int);
 int unfreeze(int);
+uint64 meminfo(void);
 
 // ulib.c
 int stat(const char*, struct stat*);
