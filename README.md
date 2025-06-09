@@ -31,7 +31,7 @@ The process structure (`struct proc`) has been extended with:
 
 ### Testing
 
-A test program (`freezerTest.c`) is included to demonstrate the functionality:
+3 test programs (`freezerTest.c`) (`freezerTest2.c`) (`freezerTest3.c`) are included to demonstrate the functionality:
 - Creates a child process that continuously prints its status
 - Freezes the child process
 - Keeps it frozen for a period
@@ -48,6 +48,12 @@ make qemu
 2. Run the test program:
 ```bash
 freezerTest
+```
+```bash
+freezerTest2
+```
+```bash
+freezerTest3
 ```
 
 ## Usage Example
